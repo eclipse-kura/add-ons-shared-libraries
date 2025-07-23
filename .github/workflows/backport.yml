@@ -1,0 +1,10 @@
+name: Backport
+on:
+  pull_request_target:
+    types:
+      - closed
+      - labeled
+
+jobs:
+  call-workflow-in-public-repo:
+    uses: eclipse-kura/.github/.github/workflows/_shared-backport.yml@main
