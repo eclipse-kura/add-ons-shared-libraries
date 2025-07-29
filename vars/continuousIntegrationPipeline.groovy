@@ -46,6 +46,24 @@ def call(Map pipelineParams = [:]) {
         assert pipelineParams.toolchain.maven instanceof String
         assert valid_jdks.contains(pipelineParams.toolchain.jdk)
         assert valid_mavens.contains(pipelineParams.toolchain.maven)
+
+        // Check sonar configuration is set and valid
+        assert pipelineParams.sonar
+        assert pipelineParams.sonar.enable instanceof Boolean
+        assert pipelineParams.sonar.projectKey instanceof String
+        assert pipelineParams.sonar.tokenId instanceof String
+        assert pipelineParams.sonar.exclusions instanceof String
+
+        // If sonar is enabled, ensure required fields are not empty
+        if (pipelineParams.sonar.enable) {
+            assert !pipelineParams.sonar.projectKey.isEmpty() : "sonar.projectKey cannot be empty when sonar is enabled"
+            assert !pipelineParams.sonar.tokenId.isEmpty() : "sonar.tokenId cannot be empty when sonar is enabled"
+
+            // Validate that projectKey contains only safe characters
+            assert pipelineParams.sonar.projectKey.matches(/^[a-zA-Z0-9_-]+$/) : "sonar.projectKey contains invalid characters. Only alphanumeric, underscores and hyphens are allowed"
+            // Validate that exclusions don't contain potentially dangerous characters
+            assert !pipelineParams.sonar.exclusions.matches(/.*[;&|`$(){}[\]\\"].*/) : "sonar.exclusions contains potentially dangerous characters"
+        }
     }
 
     stage ("Checkout repository") {
