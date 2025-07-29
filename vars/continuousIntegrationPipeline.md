@@ -16,7 +16,7 @@
 ## Example caller pipeline script:
 
 ```groovy
-@Library "add-ons-shared-libs@main"
+@Library "add-ons-shared-libs@develop"
 
 node {
     continuousIntegrationPipeline(
