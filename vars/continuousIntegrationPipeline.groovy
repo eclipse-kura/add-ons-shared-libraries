@@ -38,8 +38,8 @@ def call(Map pipelineParams = [:]) {
         assert pipelineParams.buildType.equals("install") || pipelineParams.buildType.equals("deploy")
 
         // Check toolchain option is set and valid
-        valid_jdks = [ "temurin-jdk17-latest" ]
-        valid_mavens = [ "apache-maven-3.9.6" ]
+        def valid_jdks = [ "temurin-jdk17-latest" ]
+        def valid_mavens = [ "apache-maven-3.9.6" ]
 
         assert pipelineParams.toolchain
         assert pipelineParams.toolchain.jdk instanceof String
