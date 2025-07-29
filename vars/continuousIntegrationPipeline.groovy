@@ -24,7 +24,7 @@ def call(Map pipelineParams = [:]) {
     ])
 
     // Populate keys that are not set with default parameters
-    defaultParameters = [
+    def defaultParameters = [
         toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ],
         buildType: "install",
         sonar: [ enable: false, projectKey: "", tokenId: "", exclusions: "tests/**/*.java" ],
