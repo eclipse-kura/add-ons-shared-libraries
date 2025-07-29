@@ -126,7 +126,7 @@ def call(Map pipelineParams = [:]) {
     }
 
     stage('Sonar quality gate') {
-        if (pipelineParams.sonarEnable) {
+        if (pipelineParams.sonar.enable) {
             sleep(30) // Wait for Sonar to complete its scan
             timeout(time: 1, unit: 'MINUTES') {
                 def qg = waitForQualityGate()
