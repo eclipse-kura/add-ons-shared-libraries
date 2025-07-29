@@ -1,4 +1,5 @@
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
+import java.util.regex.Pattern
 
 def boolean onlyDocumentationFilesChangedIn(String workDirectory) {
     if (!env.CHANGE_TARGET) {
@@ -62,8 +63,8 @@ def call(Map pipelineParams = [:]) {
             // Validate that projectKey contains only safe characters
             assert pipelineParams.sonar.projectKey.matches(/^[a-zA-Z0-9_-]+$/) : "sonar.projectKey contains invalid characters. Only alphanumeric, underscores and hyphens are allowed"
             // Validate that exclusions don't contain potentially dangerous characters
-            def dangerousCharacters = [ ';', '&', '|', '`', '$', '(', ')', '{', '}', '[', ']', '\\', '\'' ]
-            assert !dangerousCharacters.any{ pipelineParams.sonar.exclusions.contains(it)}  : "sonar.exclusions contains potentially dangerous characters: ${dangerousCharacters.join(', ')}"
+            assert pipelineParams.sonar.exclusions.matches(/^[a-zA-Z0-9_-\/\*]+$/) : "sonar.exclusions contains invalid characters. Only alphanumeric, underscores, slashes, hyphens and asterisks are allowed"
+
         }
     }
 
