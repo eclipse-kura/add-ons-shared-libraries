@@ -23,4 +23,4 @@ node {
 }
 ```
 
-Whenever we need to change something in the `main` branch and want to propagate the changes to the `plugin/*` branches, we can just leverage our "Backport" Github action.
+Whenever we need to change something in the `develop` branch and want to propagate the changes to the `plugin/*` branches, we can just leverage our "Backport" Github action.
