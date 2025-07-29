@@ -20,7 +20,11 @@
 
 node {
     continuousIntegrationPipeline(
-        toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ]
+        sonar: [
+          enable: true,
+          projectKey: "eclipse-kura_kura-something",
+          tokenId: "sonarcloud-token-kura-something"
+        ]
     )
 }
 ```
