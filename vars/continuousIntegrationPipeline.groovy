@@ -27,8 +27,7 @@ def call(Map pipelineParams = [:]) {
     defaultParameters = [
         toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ],
         buildType: "install",
-        sonarEnable: true,
-        sonarExclusions: 'tests/**/*.java',
+        sonar: [ enable: false, projectKey: "", tokenId: "", exclusions: "tests/**/*.java" ],
         pushArtifacts: true
     ]
     pipelineParams = defaultParameters << pipelineParams
@@ -97,29 +96,25 @@ def call(Map pipelineParams = [:]) {
         }
     }
 
-    // TODO: Fixme
     stage ("Sonar scan") {
-        if (pipelineParams.sonarEnable) {
+        if (pipelineParams.sonar.enable) {
             timeout(time: 2, unit: 'HOURS') {
                 dir("workdir") {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6', options: [artifactsPublisher(disabled: true)]) {
-                        withCredentials([string(credentialsId: 'sonarcloud-token-kura-command', variable: 'SONARCLOUD_TOKEN')]) {
-                            withSonarQubeEnv {
-                                sh '''
-                                    mvn sonar:sonar \
-                                        -Dmaven.test.failure.ignore=true \
-                                        -Dsonar.organization=eclipse-kura \
-                                        -Dsonar.host.url=${SONAR_HOST_URL} \
-                                        -Dsonar.token=${SONARCLOUD_TOKEN} \
-                                        -Dsonar.pullrequest.branch=${CHANGE_BRANCH} \
-                                        -Dsonar.pullrequest.base=${CHANGE_TARGET} \
-                                        -Dsonar.pullrequest.key=${CHANGE_ID}\
-                                        -Dsonar.java.binaries='target/' \
-                                        -Dsonar.core.codeCoveragePlugin=jacoco \
-                                        -Dsonar.projectKey=eclipse-kura_kura-command \
-                                        -Dsonar.exclusions=tests/**/*.java
-                                '''
-                            }
+                        withSonarQubeEnv( credentialsId: pipelineParams.sonar.tokenId ) {
+                            sh """
+                                mvn sonar:sonar \
+                                    -Dmaven.test.failure.ignore=true \
+                                    -Dsonar.organization=eclipse-kura \
+                                    -Dsonar.host.url=${SONAR_HOST_URL} \
+                                    -Dsonar.pullrequest.branch=${CHANGE_BRANCH} \
+                                    -Dsonar.pullrequest.base=${CHANGE_TARGET} \
+                                    -Dsonar.pullrequest.key=${CHANGE_ID}\
+                                    -Dsonar.java.binaries='target/' \
+                                    -Dsonar.core.codeCoveragePlugin=jacoco \
+                                    -Dsonar.projectKey=${pipelineParams.sonar.projectKey} \
+                                    -Dsonar.exclusions=${pipelineParams.sonar.exclusions}
+                            """
                         }
                     }
                 }
