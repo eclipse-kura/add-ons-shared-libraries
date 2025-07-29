@@ -63,8 +63,7 @@ def call(Map pipelineParams = [:]) {
             assert pipelineParams.sonar.projectKey.matches(/^[a-zA-Z0-9_-]+$/) : "sonar.projectKey contains invalid characters. Only alphanumeric, underscores and hyphens are allowed"
             // Validate that exclusions don't contain potentially dangerous characters
             def dangerousCharacters = [ ';', '&', '|', '`', '$', '(', ')', '{', '}', '[', ']', '\\', '\'' ]
-            dangerousCharacters.any{ assert !pipelineParams.sonar.exclusions.contains(it) : "sonar.exclusions cannot contain {it} character" }
-
+            assert !dangerousCharacters.any{ pipelineParams.sonar.exclusions.contains(it)}  : "sonar.exclusions contains potentially dangerous characters: ${dangerousCharacters.join(', ')}"
         }
     }
 
