@@ -28,7 +28,7 @@ def call(Map pipelineParams = [:]) {
     def defaultParameters = [
         toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ],
         buildType: "install",
-        sonar: [ enable: false, projectKey: "", tokenId: "", exclusions: "tests/**/*.java" ],
+        sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: null ],
         pushArtifacts: true
     ]
     pipelineParams = defaultParameters << pipelineParams
@@ -51,6 +51,9 @@ def call(Map pipelineParams = [:]) {
         // Check sonar configuration is set and valid
         assert pipelineParams.sonar
         assert pipelineParams.sonar.enable instanceof Boolean
+
+        echo "DEBUG: sonar.enable = ${pipelineParams.sonar.enable} (type: ${pipelineParams.sonar.enable.getClass()})"
+        echo "DEBUG: sonar = ${pipelineParams.sonar}"
 
         // If sonar is enabled, ensure required fields are not empty
         if (pipelineParams.sonar.enable) {
