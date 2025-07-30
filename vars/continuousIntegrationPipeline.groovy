@@ -1,3 +1,5 @@
+import static groovy.json.JsonOutput.*
+
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 import java.util.regex.Pattern
 
@@ -33,11 +35,8 @@ def call(Map pipelineParams = [:]) {
     ]
     pipelineParams = defaultParameters << pipelineParams
 
-    stage ("Debug") {
-        echo "DEBUG: pipelineParams = ${pipelineParams}"
-
-        echo "DEBUG: sonar.enable = ${pipelineParams.sonar.enable} (type: ${pipelineParams.sonar.enable.getClass()})"
-        echo "DEBUG: sonar = ${pipelineParams.sonar}"
+    stage ("Parameters") {
+        println prettyPrint(toJson(pipelineParams))
     }
 
     stage ("Pipeline parameters check") {
