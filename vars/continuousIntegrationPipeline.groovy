@@ -1,3 +1,6 @@
+import static groovy.json.JsonOutput.toJson
+import static groovy.json.JsonOutput.prettyPrint
+
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 import java.util.regex.Pattern
 
@@ -28,12 +31,16 @@ def call(Map pipelineParams = [:]) {
     def defaultParameters = [
         toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ],
         buildType: "install",
-        sonar: [ enable: false, projectKey: "", tokenId: "", exclusions: "tests/**/*.java" ],
+        sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: null ],
         pushArtifacts: true
     ]
     pipelineParams = defaultParameters << pipelineParams
 
     stage ("Pipeline parameters check") {
+        // Print effective pipeline parameters for debugging
+        echo "Pipeline parameters:"
+        println prettyPrint(toJson(pipelineParams))
+
         // Check buildType is valid string, either "install" or "deploy"
         assert pipelineParams.buildType instanceof String
         assert pipelineParams.buildType.equals("install") || pipelineParams.buildType.equals("deploy")
