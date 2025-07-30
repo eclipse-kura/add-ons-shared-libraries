@@ -1,4 +1,5 @@
-import static groovy.json.JsonOutput.*
+import static groovy.json.JsonOutput.toJson
+import static groovy.json.JsonOutput.prettyPrint
 
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 import java.util.regex.Pattern
