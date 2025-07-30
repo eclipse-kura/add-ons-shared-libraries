@@ -33,6 +33,13 @@ def call(Map pipelineParams = [:]) {
     ]
     pipelineParams = defaultParameters << pipelineParams
 
+    stage ("Debug") {
+        echo "DEBUG: pipelineParams = ${pipelineParams}"
+
+        echo "DEBUG: sonar.enable = ${pipelineParams.sonar.enable} (type: ${pipelineParams.sonar.enable.getClass()})"
+        echo "DEBUG: sonar = ${pipelineParams.sonar}"
+    }
+
     stage ("Pipeline parameters check") {
         // Check buildType is valid string, either "install" or "deploy"
         assert pipelineParams.buildType instanceof String
@@ -51,9 +58,6 @@ def call(Map pipelineParams = [:]) {
         // Check sonar configuration is set and valid
         assert pipelineParams.sonar
         assert pipelineParams.sonar.enable instanceof Boolean
-
-        echo "DEBUG: sonar.enable = ${pipelineParams.sonar.enable} (type: ${pipelineParams.sonar.enable.getClass()})"
-        echo "DEBUG: sonar = ${pipelineParams.sonar}"
 
         // If sonar is enabled, ensure required fields are not empty
         if (pipelineParams.sonar.enable) {
