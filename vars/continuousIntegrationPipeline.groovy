@@ -35,11 +35,11 @@ def call(Map pipelineParams = [:]) {
     ]
     pipelineParams = defaultParameters << pipelineParams
 
-    stage ("Parameters") {
-        println prettyPrint(toJson(pipelineParams))
-    }
-
     stage ("Pipeline parameters check") {
+        // Print effective pipeline parameters for debugging
+        echo "Pipeline parameters:"
+        println prettyPrint(toJson(pipelineParams))
+
         // Check buildType is valid string, either "install" or "deploy"
         assert pipelineParams.buildType instanceof String
         assert pipelineParams.buildType.equals("install") || pipelineParams.buildType.equals("deploy")
