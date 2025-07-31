@@ -131,10 +131,10 @@ def call(Map pipelineParams = [:]) {
 
                             // Check if on primary branch
                             def analysisParameters = ""
-                            if (env.CHANGE_BRANCH && env.CHANGE_TARGET && env.CHANGE_ID) {
+                            if (isPullRequest()) {
                                 analysisParameters = "-Dsonar.pullrequest.branch=${env.CHANGE_BRANCH} -Dsonar.pullrequest.base=${env.CHANGE_TARGET} -Dsonar.pullrequest.key=${env.CHANGE_ID}"
                             } else {
-                                analysisParameters = "-Dsonar.pullrequest.branch=${env.BRANCH_NAME}"
+                                analysisParameters = "-Dsonar.branch.name=${env.BRANCH_NAME}"
                             }
 
                             sh """
@@ -172,4 +172,8 @@ def call(Map pipelineParams = [:]) {
             Utils.markStageSkippedForConditional(STAGE_NAME)
         }
     }
+}
+
+private Boolean isPullRequest(){
+    return env.CHANGE_ID
 }
