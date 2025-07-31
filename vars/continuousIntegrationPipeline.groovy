@@ -128,15 +128,22 @@ def call(Map pipelineParams = [:]) {
                 dir("workdir") {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6', options: [artifactsPublisher(disabled: true)]) {
                         withSonarQubeEnv( credentialsId: pipelineParams.sonar.tokenId ) {
+
+                            // Check if on primary branch
+                            def analysisParameters = ""
+                            if (env.CHANGE_BRANCH && env.CHANGE_TARGET && env.CHANGE_ID) {
+                                analysisParameters = "-Dsonar.pullrequest.branch=${env.CHANGE_BRANCH} -Dsonar.pullrequest.base=${env.CHANGE_TARGET} -Dsonar.pullrequest.key=${env.CHANGE_ID}"
+                            } else {
+                                analysisParameters = "-Dsonar.pullrequest.branch=${env.BRANCH_NAME}"
+                            }
+
                             sh """
                                 mvn sonar:sonar \
                                     -Dmaven.test.failure.ignore=true \
                                     -Dsonar.organization=eclipse-kura \
                                     -Dsonar.host.url=${SONAR_HOST_URL} \
-                                    -Dsonar.pullrequest.branch=${CHANGE_BRANCH} \
-                                    -Dsonar.pullrequest.base=${CHANGE_TARGET} \
-                                    -Dsonar.pullrequest.key=${CHANGE_ID} \
                                     -Dsonar.java.binaries='target/' \
+                                    ${analysisParameters} \
                                     -Dsonar.core.codeCoveragePlugin=jacoco \
                                     -Dsonar.projectKey=${pipelineParams.sonar.projectKey} \
                                     -Dsonar.exclusions=${pipelineParams.sonar.exclusions}
