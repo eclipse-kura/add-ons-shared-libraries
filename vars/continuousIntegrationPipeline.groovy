@@ -120,18 +120,26 @@ def call(Map pipelineParams = [:]) {
         def debFiles = debFilesOutput ? debFilesOutput.split("\n") : []
 
         // Call uploadPackages only if we are on the default branch,
-        // if we have DEB/RPM packages to upload and if the user has set the pushArtifacts parameter to true
+        // if we have DEB packages to upload and if the user has set the pushArtifacts parameter to true
         // if (debFiles && env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
         if (debFiles && debFiles.size() > 0) {
             echo "Found DEB packages, uploading..."
 
-            // Extract Maven properties using mvn help:evaluate
-            def repoDistribution = sh(script: "mvn -f workdir/distrib/pom.xml help:evaluate -Dexpression=kura.repo.distribution -q -DforceStdout", returnStdout: true).trim()
-            def repoModule = sh(script: "mvn -f workdir/distrib/pom.xml help:evaluate -Dexpression=kura.repo.module -q -DforceStdout", returnStdout: true).trim()
+            def repoDistribution
+            def repoModule
+
+            withMaven(
+                jdk: pipelineParams.toolchain.jdk,
+                maven: pipelineParams.toolchain.maven,
+                options: [artifactsPublisher(disabled: true)]
+            ) {
+                repoDistribution = sh(script: "mvn -f workdir/distrib/pom.xml help:evaluate -Dexpression=kura.repo.distribution -q -DforceStdout", returnStdout: true).trim()
+                repoModule = sh(script: "mvn -f workdir/distrib/pom.xml help:evaluate -Dexpression=kura.repo.module -q -DforceStdout", returnStdout: true).trim()
+            }
 
             uploadPackages(repoDistribution, repoModule)
         } else {
-            echo "Skipping DEB/RPM upload"
+            echo "Skipping DEB upload"
             Utils.markStageSkippedForConditional(STAGE_NAME)
         }
     }
