@@ -120,7 +120,8 @@ def call(Map pipelineParams = [:]) {
 
         // Call uploadPackages only if we are on the default branch,
         // if we have DEB/RPM packages to upload and if the user has set the pushArtifacts parameter to true
-        if (debFiles && env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
+        // if (debFiles && env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
+        if (debFiles) {
             echo "Found DEB packages, uploading..."
 
             def distribPom = readMavenPom file: 'workdir/distrib/pom.xml'
