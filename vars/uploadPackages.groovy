@@ -42,9 +42,10 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
             echo "Uploading file: ${fileName} with architecture: ${architecture}"
 
             withCredentials([usernameColonPassword(credentialsId: 'repo.eclipse.org-bot-account', variable: 'USERPASS')]) {
-                sh '''
-                curl -u "$USERPASS" -H "Content-Type: multipart/form-data" --data-binary "@./${it}" "https://repo3.eclipse.org/repository/kura-apt/"
-                '''
+                sh(
+                    script: "curl -u \"\$USERPASS\" -H \"Content-Type: multipart/form-data\" --data-binary \"@./${it}\" \"https://repo3.eclipse.org/repository/kura-apt/\"",
+                    returnStatus: true
+                )
             }
         }
 
