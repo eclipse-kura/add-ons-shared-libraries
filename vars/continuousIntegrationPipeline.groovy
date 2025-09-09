@@ -125,10 +125,9 @@ def call(Map pipelineParams = [:]) {
         if (debFiles && debFiles.size() > 0) {
             echo "Found DEB packages, uploading..."
 
-            def distribPom = readMavenPom file: 'workdir/distrib/pom.xml'
-
-            def repoDistribution = distribPom.properties['kura.repo.distribution']
-            def repoModule = distribPom.properties['kura.repo.module']
+            // Extract Maven properties using mvn help:evaluate
+            def repoDistribution = sh(script: "mvn -f workdir/distrib/pom.xml help:evaluate -Dexpression=kura.repo.distribution -q -DforceStdout", returnStdout: true).trim()
+            def repoModule = sh(script: "mvn -f workdir/distrib/pom.xml help:evaluate -Dexpression=kura.repo.module -q -DforceStdout", returnStdout: true).trim()
 
             uploadPackages(repoDistribution, repoModule)
         } else {
@@ -136,7 +135,6 @@ def call(Map pipelineParams = [:]) {
             Utils.markStageSkippedForConditional(STAGE_NAME)
         }
     }
-
 
     stage ("Archive artifacts") {
         dir("workdir") {
