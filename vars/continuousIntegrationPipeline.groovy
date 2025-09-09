@@ -115,6 +115,26 @@ def call(Map pipelineParams = [:]) {
         }
     }
 
+    stage ("Deploy on Nexus") {
+        def debFiles = findFiles(glob: 'workdir/**/*.deb')
+
+        // Call uploadPackages only if we are on the default branch,
+        // if we have DEB/RPM packages to upload and if the user has set the pushArtifacts parameter to true
+        if (debFiles && env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
+            echo "Found DEB packages, uploading..."
+
+            def distribPom = readMavenPom file: 'workdir/distrib/pom.xml'
+
+            def repoDistribution = distribPom.properties['kura.repo.distribution']
+            def repoModule = distribPom.properties['kura.repo.module']
+
+            uploadPackages(repoDistribution, repoModule)
+        } else {
+            echo "Skipping DEB/RPM upload"
+            Utils.markStageSkippedForConditional(STAGE_NAME)
+        }
+    }
+
 
     stage ("Archive artifacts") {
         dir("workdir") {
