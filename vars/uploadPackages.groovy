@@ -22,21 +22,6 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
         assert valid_modules.contains(repoModule)
     }
 
-    stage("Upload setup") {
-        server = Artifactory.server 'artifactory'
-
-        withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-esf-apitoken', passwordVariable: 'password', usernameVariable: 'username')]) {
-            server.username = "${username}"
-            server.password = "${password}"
-        }
-
-        dir("workdir") {
-            // Traceability info
-            GIT_SHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-        }
-
-    }
-
     stage("Upload .deb packages to Artifactory") {
         def debFilesOutput = sh(script: "find workdir -type f -name '*.deb'", returnStdout: true).trim()
         def debFiles = debFilesOutput ? debFilesOutput.split("\n") : []
