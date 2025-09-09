@@ -125,17 +125,9 @@ def call(Map pipelineParams = [:]) {
         if (debFiles && debFiles.size() > 0) {
             echo "Found DEB packages, uploading..."
 
-            def repoDistribution
-            def repoModule
-
-            withMaven(
-                jdk: pipelineParams.toolchain.jdk,
-                maven: pipelineParams.toolchain.maven,
-                options: [artifactsPublisher(disabled: true)]
-            ) {
-                repoDistribution = sh(script: 'mvn -f workdir/distrib/pom.xml -Dexec.executable=echo -Dexec.args=\'${kura.repo.distribution}\' -q exec:exec --non-recursive', returnStdout: true).trim()
-                repoModule = sh(script: 'mvn -f workdir/distrib/pom.xml -Dexec.executable=echo -Dexec.args=\'${kura.repo.module}\' -q exec:exec --non-recursive', returnStdout: true).trim()
-            }
+            // FIXME read pom to extract distribution and module
+            def repoDistribution = "kura-6"
+            def repoModule = "base"
 
             uploadPackages(repoDistribution, repoModule)
         } else {
