@@ -38,7 +38,9 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
     }
 
     stage("Upload .deb packages to Artifactory") {
-        def debFiles = findFiles(glob: 'workdir/**/*.deb')
+        def debFilesOutput = sh(script: "find workdir -type f -name '*.deb'", returnStdout: true).trim()
+        def debFiles = debFilesOutput ? debFilesOutput.split("\n") : []
+
         debFiles.each {
             // Split file name to get the architecture
             def fileName = it.toString().split("/").last()

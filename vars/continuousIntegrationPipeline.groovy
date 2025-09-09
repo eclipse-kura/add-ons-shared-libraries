@@ -116,12 +116,13 @@ def call(Map pipelineParams = [:]) {
     }
 
     stage ("Deploy on Nexus") {
-        def debFiles = findFiles(glob: 'workdir/**/*.deb')
+        def debFilesOutput = sh(script: "find workdir -type f -name '*.deb'", returnStdout: true).trim()
+        def debFiles = debFilesOutput ? debFilesOutput.split("\n") : []
 
         // Call uploadPackages only if we are on the default branch,
         // if we have DEB/RPM packages to upload and if the user has set the pushArtifacts parameter to true
         // if (debFiles && env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
-        if (debFiles) {
+        if (debFiles && debFiles.size() > 0)
             echo "Found DEB packages, uploading..."
 
             def distribPom = readMavenPom file: 'workdir/distrib/pom.xml'
