@@ -130,19 +130,19 @@ def call(Map pipelineParams = [:]) {
                 maven: pipelineParams.toolchain.maven,
                 options: [artifactsPublisher(disabled: true)]
             ) {
-                repoDistribution = sh(script: '''
+                repoDistribution = sh(script: """
                     mvn -f workdir/distrib/pom.xml \
-                        -Dexec.executable=echo \
-                        -Dexec.args=\"${kura.repo.distribution}\" \
-                        -q exec:exec --non-recursive
-                ''', returnStdout: true).trim()
+                    help:evaluate \
+                    -Dexpression=kura.repo.distribution \
+                    -q -DforceStdout
+                """, returnStdout: true).trim()
 
-                repoModule = sh(script: '''
+                repoModule = sh(script: """
                     mvn -f workdir/distrib/pom.xml \
-                    -Dexec.executable=echo \
-                    -Dexec.args=\"${kura.repo.module}\" \
-                    -q exec:exec --non-recursive
-                ''', returnStdout: true).trim()
+                    help:evaluate \
+                    -Dexpression=kura.repo.module \
+                    -q -DforceStdout
+                """, returnStdout: true).trim()
             }
 
             uploadPackages(repoDistribution, repoModule)
