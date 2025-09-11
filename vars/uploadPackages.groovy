@@ -23,7 +23,12 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
         debFiles.each {
             withCredentials([usernameColonPassword(credentialsId: 'repo.eclipse.org-bot-account', variable: 'USERPASS')]) {
                 sh(
-                    script: "curl -u \"\$USERPASS\" -H \"Content-Type: multipart/form-data\" --data-binary \"@./${it}\" \"https://repo3.eclipse.org/repository/kura-apt/\"",
+                    script: """
+                        curl -u \"\$USERPASS\" \
+                        -H \"Content-Type: multipart/form-data\" \
+                        --data-binary \"@./${it}\" \
+                        \"https://repo3.eclipse.org/repository/kura-apt/\"
+                    """,
                     returnStatus: true
                 )
             }
