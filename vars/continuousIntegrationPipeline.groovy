@@ -125,6 +125,7 @@ def call(Map pipelineParams = [:]) {
             def repoDistribution
             def repoModule
 
+            // Retrieve distribution and module from distrib POM
             withMaven(
                 jdk: pipelineParams.toolchain.jdk,
                 maven: pipelineParams.toolchain.maven,
