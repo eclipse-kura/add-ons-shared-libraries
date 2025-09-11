@@ -115,15 +115,12 @@ def call(Map pipelineParams = [:]) {
         }
     }
 
-    stage ("Deploy on Nexus") {
-        def debFilesOutput = sh(script: "find workdir -type f -name '*.deb'", returnStdout: true).trim()
-        def debFiles = debFilesOutput ? debFilesOutput.split("\n") : []
-
+    stage ("Deploy on Nexus Repository") {
         // Call uploadPackages only if we are on the default branch,
         // if we have DEB packages to upload and if the user has set the pushArtifacts parameter to true
         // if (debFiles && env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
-        if (debFiles && debFiles.size() > 0) {
-            echo "Found DEB packages, uploading..."
+        if (true) {
+            echo "Uploading DEB packages..."
 
             // FIXME read pom to extract distribution and module
             def repoDistribution = "kura-6"
@@ -131,7 +128,7 @@ def call(Map pipelineParams = [:]) {
 
             uploadPackages(repoDistribution, repoModule)
         } else {
-            echo "Skipping DEB upload"
+            echo "Skipping DEB packages upload."
             Utils.markStageSkippedForConditional(STAGE_NAME)
         }
     }
