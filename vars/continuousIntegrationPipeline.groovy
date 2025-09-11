@@ -133,14 +133,14 @@ def call(Map pipelineParams = [:]) {
                 repoDistribution = sh(script: '''
                     mvn -f workdir/distrib/pom.xml \
                         -Dexec.executable=echo \
-                        -Dexec.args="${kura.repo.distribution}" \
+                        -Dexec.args=\"${kura.repo.distribution}\" \
                         -q exec:exec --non-recursive
                 ''', returnStdout: true).trim()
 
                 repoModule = sh(script: '''
                     mvn -f workdir/distrib/pom.xml \
                     -Dexec.executable=echo \
-                    -Dexec.args="${kura.repo.module}" \
+                    -Dexec.args=\"${kura.repo.module}\" \
                     -q exec:exec --non-recursive
                 ''', returnStdout: true).trim()
             }
