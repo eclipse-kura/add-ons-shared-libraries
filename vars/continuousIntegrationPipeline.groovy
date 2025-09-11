@@ -135,14 +135,14 @@ def call(Map pipelineParams = [:]) {
                     help:evaluate \
                     -Dexpression=kura.repo.distribution \
                     -q -DforceStdout
-                """, returnStdout: true).trim().get(lines.size()-1)
+                """, returnStdout: true).trim().readLines()[-1]
 
                 repoModule = sh(script: """
                     mvn -f workdir/distrib/pom.xml \
                     help:evaluate \
                     -Dexpression=kura.repo.module \
                     -q -DforceStdout
-                """, returnStdout: true).trim().get(lines.size()-1)
+                """, returnStdout: true).trim().readLines()[-1]
             }
 
             uploadPackages(repoDistribution, repoModule)
