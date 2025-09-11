@@ -122,9 +122,28 @@ def call(Map pipelineParams = [:]) {
         if (true) {
             echo "Uploading DEB packages..."
 
-            // FIXME read pom to extract distribution and module
-            def repoDistribution = "kura-6"
-            def repoModule = "base"
+            def repoDistribution
+            def repoModule
+
+            withMaven(
+                jdk: pipelineParams.toolchain.jdk,
+                maven: pipelineParams.toolchain.maven,
+                options: [artifactsPublisher(disabled: true)]
+            ) {
+                repoDistribution = sh(script: '''
+                    mvn -f workdir/distrib/pom.xml \
+                        -Dexec.executable=echo \
+                        -Dexec.args="${kura.repo.distribution}" \
+                        -q exec:exec --non-recursive
+                ''', returnStdout: true).trim()
+
+                repoModule = sh(script: '''
+                    mvn -f workdir/distrib/pom.xml \
+                    -Dexec.executable=echo \
+                    -Dexec.args="${kura.repo.module}" \
+                    -q exec:exec --non-recursive
+                ''', returnStdout: true).trim()
+            }
 
             uploadPackages(repoDistribution, repoModule)
         } else {
