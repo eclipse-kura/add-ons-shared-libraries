@@ -17,8 +17,11 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
     }
 
     stage("Upload .deb packages to Artifactory") {
-        def debFilesOutput = sh(script: "find workdir -type f -name '*.deb'", returnStdout: true).trim()
-        def debFiles = debFilesOutput ? debFilesOutput.split("\n") : []
+        def debFiles = findFiles(glob: 'workdir/**/*.deb')
+
+        if (debFiles.size() == 0) {
+            error("No .deb files found to upload")
+        }
 
         debFiles.each {
             withCredentials([usernameColonPassword(credentialsId: 'repo.eclipse.org-bot-account', variable: 'USERPASS')]) {
@@ -37,6 +40,5 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
         if (setupPromotion) {
             // TODO
         }
-
     }
 }

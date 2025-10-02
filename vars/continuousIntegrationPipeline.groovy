@@ -118,33 +118,14 @@ def call(Map pipelineParams = [:]) {
     stage ("Deploy on Nexus Repository") {
         // Call uploadPackages only if we are on the default branch,
         // if we have DEB packages to upload and if the user has set the pushArtifacts parameter to true
-        // if (debFiles && env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
-        if (true) {
+        // if (env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
+        if (true) { // FIXME: For testing only
             echo "Uploading DEB packages..."
 
-            def repoDistribution
-            def repoModule
+            def distribPom = readMavenPom file: 'workdir/distrib/pom.xml'
 
-            // Retrieve distribution and module from distrib POM
-            withMaven(
-                jdk: pipelineParams.toolchain.jdk,
-                maven: pipelineParams.toolchain.maven,
-                options: [artifactsPublisher(disabled: true)]
-            ) {
-                repoDistribution = sh(script: """
-                    mvn -f workdir/distrib/pom.xml \
-                    help:evaluate \
-                    -Dexpression=kura.repo.distribution \
-                    -q -DforceStdout
-                """, returnStdout: true).trim().readLines()[-1]
-
-                repoModule = sh(script: """
-                    mvn -f workdir/distrib/pom.xml \
-                    help:evaluate \
-                    -Dexpression=kura.repo.module \
-                    -q -DforceStdout
-                """, returnStdout: true).trim().readLines()[-1]
-            }
+            def repoDistribution = distribPom.properties['kura.repo.distribution']
+            def repoModule = distribPom.properties['kura.repo.module']
 
             uploadPackages(repoDistribution, repoModule)
         } else {
