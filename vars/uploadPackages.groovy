@@ -25,15 +25,21 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
 
         debFiles.each {
             withCredentials([usernameColonPassword(credentialsId: 'repo.eclipse.org-bot-account', variable: 'USERPASS')]) {
-                sh(
+                int status sh(
                     script: """
                         curl -u \"\$USERPASS\" \
+                        -w '%{http_code}' \
                         -H \"Content-Type: multipart/form-data\" \
                         --data-binary \"@./${it}\" \
-                        \"https://repo3.eclipse.org/repository/kura-apt-dev/\"
+                        \"https://repo3.eclipse.org/repository/kura-apt-dev/\" \
+                        -o /dev/null
                     """,
                     returnStatus: true
                 )
+            }
+
+            if (status != 200) {
+                error("Returned status code = $status")
             }
         }
 
