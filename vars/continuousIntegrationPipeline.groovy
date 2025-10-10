@@ -118,8 +118,7 @@ def call(Map pipelineParams = [:]) {
     stage ("Deploy on Nexus Repository") {
         // Call uploadPackages only if we are on the default branch,
         // if we have DEB packages to upload and if the user has set the pushArtifacts parameter to true
-        // if (env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
-        if (true) { // FIXME: For testing only
+        if (env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
             echo "Uploading DEB packages..."
 
             def distribPom = readMavenPom file: 'workdir/distrib/pom.xml'
