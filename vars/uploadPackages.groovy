@@ -25,7 +25,7 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
 
         debFiles.each {
             withCredentials([usernameColonPassword(credentialsId: 'repo.eclipse.org-bot-account', variable: 'USERPASS')]) {
-                int status sh(
+                int status = sh(
                     script: """
                         curl -u \"\$USERPASS\" \
                         -w '%{http_code}' \
@@ -35,7 +35,7 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
                         -o /dev/null
                     """,
                     returnStatus: true
-                )
+                ).trim()
             }
 
             if (status != 200) {
