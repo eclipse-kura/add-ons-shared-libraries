@@ -30,7 +30,7 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
                         curl -u \"\$USERPASS\" \
                         -H \"Content-Type: multipart/form-data\" \
                         --data-binary \"@./${it}\" \
-                        \"https://repo3.eclipse.org/repository/kura-apt/\"
+                        \"https://repo3.eclipse.org/repository/kura-apt-dev/\"
                     """,
                     returnStatus: true
                 )
