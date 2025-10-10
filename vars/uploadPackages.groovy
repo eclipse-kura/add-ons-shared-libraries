@@ -36,10 +36,10 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
                     """,
                     returnStdout: true
                 ).trim()
-            }
 
-            if (status != "200") {
-                error("Returned status code = $status")
+                if (status != "200") {
+                    error("Returned status code = $status")
+                }
             }
         }
 
