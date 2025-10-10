@@ -16,7 +16,7 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
         assert valid_modules.contains(repoModule)
     }
 
-    stage("Upload .deb packages to Artifactory") {
+    stage("Upload .deb packages to Nexus") {
         def debFiles = findFiles(glob: 'workdir/**/*.deb')
 
         if (debFiles.size() == 0) {
