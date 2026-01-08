@@ -155,7 +155,7 @@ def call(Map pipelineParams = [:]) {
                             }
 
                             sh """
-                                mvn sonar:sonar \
+                                mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                                     -Dmaven.test.failure.ignore=true \
                                     -Dsonar.organization=eclipse-kura \
                                     -Dsonar.host.url=${SONAR_HOST_URL} \
