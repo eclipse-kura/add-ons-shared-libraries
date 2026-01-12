@@ -25,7 +25,9 @@ node {
         sonar: [
           enable: true,
           projectKey: "eclipse-kura_kura-something",
-          tokenId: "sonarcloud-token-kura-something"
+          tokenId: "sonarcloud-token-kura-something",
+          exclusions: "*.xml",
+          testExclusions: "**/*.java,*.xml"
         ],
     )
 }
