@@ -31,7 +31,7 @@ def call(Map pipelineParams = [:]) {
     def defaultParameters = [
         toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ],
         buildType: "install",
-        sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: null ],
+        sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: "*.xml", testExclusions: "**/*.java,*.xml" ],
         pushArtifacts: true
     ]
     pipelineParams = defaultParameters << pipelineParams
@@ -71,6 +71,8 @@ def call(Map pipelineParams = [:]) {
             // Validate that exclusions don't contain potentially dangerous characters
             assert pipelineParams.sonar.exclusions instanceof String
             assert !pipelineParams.sonar.exclusions.matches(/.*[;&|`$(){}\[\]\"].*/) : "sonar.exclusions contains potentially dangerous characters"
+            assert pipelineParams.sonar.testExclusions instanceof String
+            assert !pipelineParams.sonar.testExclusions.matches(/.*[;&|`$(){}\[\]\"].*/) : "sonar.test.exclusions contains potentially dangerous characters"
         }
     }
 
@@ -163,7 +165,7 @@ def call(Map pipelineParams = [:]) {
                                     ${analysisParameters} \
                                     -Dsonar.core.codeCoveragePlugin=jacoco \
                                     -Dsonar.projectKey=${pipelineParams.sonar.projectKey} \
-                                    -Dsonar.exclusions=${pipelineParams.sonar.exclusions}
+                                    -Dsonar.exclusions=${pipelineParams.sonar.exclusions} -Dsonar.test.exclusions=${pipelineParams.sonar.testExclusions}
                             """
                         }
                     }
