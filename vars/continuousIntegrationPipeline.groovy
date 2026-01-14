@@ -31,7 +31,7 @@ def call(Map pipelineParams = [:]) {
     def defaultParameters = [
         toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ],
         buildType: "install",
-        sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: "*.xml", testExclusions: "**/*.java,*.xml" ],
+        sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: "tests/**/*,**/*.xml,**/*.yml", testExclusions: "**/*" ],
         pushArtifacts: true
     ]
     pipelineParams = defaultParameters << pipelineParams
