@@ -145,7 +145,7 @@ def call(Map pipelineParams = [:]) {
         if (pipelineParams.sonar.enable) {
             timeout(time: 2, unit: 'HOURS') {
                 dir("workdir") {
-                    withMaven(jdk: 'temurin-jdk21-latest', maven: 'apache-maven-3.9.9, options: [artifactsPublisher(disabled: true)]) {
+                    withMaven(jdk: 'temurin-jdk21-latest', maven: 'apache-maven-3.9.9', options: [artifactsPublisher(disabled: true)]) {
                         withSonarQubeEnv( credentialsId: pipelineParams.sonar.tokenId ) {
 
                             // Check if on primary branch
