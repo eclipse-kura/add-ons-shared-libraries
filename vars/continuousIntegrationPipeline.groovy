@@ -29,7 +29,7 @@ def call(Map pipelineParams = [:]) {
 
     // Populate keys that are not set with default parameters
     def defaultParameters = [
-        toolchain: [ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ],
+        toolchain: [ jdk: "temurin-jdk21-latest", maven: "apache-maven-3.9.9" ],
         buildType: "install",
         sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: "tests/**/*,**/*.xml,**/*.yml", testExclusions: "**/*" ],
         pushArtifacts: true
@@ -46,8 +46,8 @@ def call(Map pipelineParams = [:]) {
         assert pipelineParams.buildType.equals("install") || pipelineParams.buildType.equals("deploy")
 
         // Check toolchain option is set and valid
-        def valid_jdks = [ "temurin-jdk17-latest" ]
-        def valid_mavens = [ "apache-maven-3.9.6" ]
+        def valid_jdks = [ "temurin-jdk21-latest" ]
+        def valid_mavens = [ "apache-maven-3.9.9" ]
 
         assert pipelineParams.toolchain
         assert pipelineParams.toolchain.jdk instanceof String
@@ -145,7 +145,7 @@ def call(Map pipelineParams = [:]) {
         if (pipelineParams.sonar.enable) {
             timeout(time: 2, unit: 'HOURS') {
                 dir("workdir") {
-                    withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6', options: [artifactsPublisher(disabled: true)]) {
+                    withMaven(jdk: 'temurin-jdk21-latest', maven: 'apache-maven-3.9.9', options: [artifactsPublisher(disabled: true)]) {
                         withSonarQubeEnv( credentialsId: pipelineParams.sonar.tokenId ) {
 
                             // Check if on primary branch

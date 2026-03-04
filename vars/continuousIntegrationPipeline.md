@@ -11,9 +11,9 @@
      - `projectKey`: Sonar unique identifier for the project. Can be found on the SonarQube instance. **Must be set if Sonar scan is enabled**
      - `exclusions`: Source path to be excluded from Sonar analysis. Default value: `tests/**/*,**/*.xml,**/*.yml`. **Must be set if Sonar scan is enabled**
      - `testExclusions`: Test path to be excluded from Sonar analysis. Default value: `**/*`. **Must be set if Sonar scan is enabled**
-  - [Optional] `toolchain`: The toolchain to be used for the build. Default value: `[ jdk: "temurin-jdk17-latest", maven: "apache-maven-3.9.6" ]`. Available values:
-     - **jdk**: `temurin-jdk17-latest`
-     - **maven**: `apache-maven-3.9.6`
+  - [Optional] `toolchain`: The toolchain to be used for the build. Default value: `[ jdk: "temurin-jdk21-latest", maven: "apache-maven-3.9.9" ]`. Available values:
+     - **jdk**: `temurin-jdk21-latest`
+     - **maven**: `apache-maven-3.9.9`
 
 ## Example caller pipeline script:
 
