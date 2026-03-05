@@ -123,7 +123,7 @@ def call(Map pipelineParams = [:]) {
         if (env.BRANCH_IS_PRIMARY && pipelineParams.pushArtifacts) {
             echo "Uploading DEB packages..."
 
-            def distribPom = readMavenPom file: 'workdir/distrib/pom.xml'
+            def distribPom = readMavenPom file: 'workdir/kura-apps-distrib/pom.xml'
 
             def repoDistribution = distribPom.properties['kura.repo.distribution']
             def repoModule = distribPom.properties['kura.repo.module']
