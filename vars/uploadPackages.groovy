@@ -31,7 +31,7 @@ def call(String repoDistribution, String repoModule, Boolean setupPromotion = fa
                         -w '%{http_code}' \
                         -H \"Content-Type: multipart/form-data\" \
                         --data-binary \"@./${it}\" \
-                        \"https://repo3.eclipse.org/repository/kura-apt-dev/\" \
+                        \"https://repo.eclipse.org/repository/kura-apt-dev/\" \
                         -o /dev/null
                     """,
                     returnStdout: true
