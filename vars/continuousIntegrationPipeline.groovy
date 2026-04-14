@@ -34,7 +34,10 @@ def call(Map pipelineParams = [:]) {
         sonar: [ enable: false, projectKey: null, tokenId: null, exclusions: "tests/**/*,**/*.xml,**/*.yml", testExclusions: "**/*" ],
         pushArtifacts: true
     ]
-    pipelineParams = defaultParameters << pipelineParams
+    pipelineParams = deepMerge(defaultParameters, pipelineParams)
+
+    // Pretty print the final pipeline parameters
+    echo "Pipeline parameters: ${groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(pipelineParams))}"
 
     stage ("Pipeline parameters check") {
         // Print effective pipeline parameters for debugging
