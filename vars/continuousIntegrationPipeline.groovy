@@ -3,6 +3,7 @@ import static groovy.json.JsonOutput.prettyPrint
 
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 import java.util.regex.Pattern
+import org.apache.commons.text.StringEscapeUtils
 
 def boolean onlyDocumentationFilesChangedIn(String workDirectory) {
     if (!env.CHANGE_TARGET) {
@@ -153,8 +154,9 @@ def call(Map pipelineParams = [:]) {
 
                             // Check if on primary branch
                             def analysisParameters = ""
+                            def changeBranch = StringEscapeUtils.escapeShellArg(env.CHANGE_BRANCH);
                             if (isPullRequest()) {
-                                analysisParameters = "-Dsonar.pullrequest.branch=${env.CHANGE_BRANCH} -Dsonar.pullrequest.base=${env.CHANGE_TARGET} -Dsonar.pullrequest.key=${env.CHANGE_ID}"
+                                analysisParameters = "-Dsonar.pullrequest.branch=${changeBranch} -Dsonar.pullrequest.base=${env.CHANGE_TARGET} -Dsonar.pullrequest.key=${env.CHANGE_ID}"
                             } else {
                                 analysisParameters = "-Dsonar.branch.name=${env.BRANCH_NAME}"
                             }
